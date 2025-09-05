@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  dbserv:
+    image: mariadb:11
+    container_name: typodb
+    restart: unless-stopped             # Se reinicia automáticamente si se detiene por error
+    environment:
+      MARIADB_DATABASE: typo3           # Nombre de la base de datos
+      MARIADB_USER: typo3               # Usuario de la base de datos
+      MARIADB_PASSWORD: typopass        # Contraseña del usuario
+      MARIADB_ROOT_PASSWORD: rootpass   # Contraseña del usuario root de MariaDB
+    volumes:                            # Persistencia: guarda los datos de la BD aunque se borre el contenedor
+      - datos_db:/var/lib/mysql
+    networks:
+      - nettypo3
+
+  webserv:
+    image: webdevops/php-apache:8.2
+    container_name: typoweb
+    user: root
+    restart: unless-stopped
+    depends_on:                         # Nos aseguramos que la BD se levante antes que el servicio web
+      - dbserv
+    environment:                        # Configuramos las variables de entorno de TYPO3
+      WEB_DOCUMENT_ROOT: /app/public    # Carpeta raíz del proyecto dentro del contenedor
+      TYPO3_CONTEXT: Production         # Contexto (puede ser Production o Development)
+      TYPO3_DB_DRIVER: mysqli           # Driver a usar (MySQL/MariaDB)
+      TYPO3_DB_USERNAME: typo3
+      TYPO3_DB_PASSWORD: typopass
+      TYPO3_DB_HOST: dbserv
+      TYPO3_DB_DBNAME: typo3
+    volumes:                            # Montamos el código de TYPO3 en el contenedor
+      - ./app:/app                      # Mapeo local ./app -> /app en contenedor
+    ports:
+      - "8080:80"                       # Exponemos el puerto 80 del contenedor en el puerto 8080 de la PC, accedemos con http://localhost:8080
+    networks:
+      - nettypo3
+
+networks:
+  nettypo3:
+
+volumes:                                # Definimos los volúmenes persistentes
+  datos_db:                              # Aquí Docker va a guardar la BD aunque borremos el contenedor
