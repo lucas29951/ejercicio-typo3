@@ -7,10 +7,11 @@ Este repositorio contiene la configuración mínima para levantar un entorno TYP
 ```
 
 proyecto-typo3/
-│── docker-compose.yml
-│── app/
-└── public/
-└── index.php
+├── app/
+│   └── public/
+│       └── index.php
+├── docker-compose.yml
+└── README.md
 
 ````
 
@@ -18,14 +19,13 @@ proyecto-typo3/
 
 1. Clonar este repositorio:
    ```bash
-   git clone https://github.com/tuusuario/proyecto-typo3.git
-   cd proyecto-typo3
+   git clone https://github.com/lucas29951/ejercicio-typo3
+   cd ejercicio-typo3
 2. Levantar los contenedores:
    ```bash
    docker compose up -d
 3. Acceder a:
    * Sitio web: [http://localhost:8080](http://localhost:8080)
-   * phpMyAdmin (si lo agregas): [http://localhost:8081](http://localhost:8081)
 
 ## 📥 Instalación de TYPO3
 
